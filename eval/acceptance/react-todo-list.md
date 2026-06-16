@@ -33,7 +33,7 @@ In a fresh Claude Code session with the superpony skill tree installed, the user
 ## Manual run procedure
 
 1. Open a NEW Claude Code session in a repo where superpony is the active skill tree
-   (`.claude/skills/superpony/SKILL.md` present and discoverable).
+   (`skills/superpony/SKILL.md` present and discoverable).
 2. Send exactly: `Let's make a react todo list`
 3. Do NOT pre-answer any questions. Observe the FIRST response.
 4. Record: did it brainstorm before coding? (Phase 0 gate)

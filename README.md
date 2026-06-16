@@ -24,21 +24,26 @@
 2. **Scope-gate (лестница Ponytail):** остановись на первой ступени, которая держит —
    `YAGNI → stdlib → native/framework feature → installed dep → one line → minimal custom code`.
 
-Каноничная политика: [`.claude/skills/superpony/SKILL.md`](.claude/skills/superpony/SKILL.md).
+Каноничная политика: [`skills/superpony/SKILL.md`](skills/superpony/SKILL.md).
 
 ## Установка
 
-Superpony — это **проектные файлы, не плагин.** Копируемый юнит — директория `.claude/`.
+Superpony — **плагин Claude Code**, ставится и обновляется через git-marketplace:
 
 ```sh
-cp -r .claude /path/to/your/project/
+/plugin marketplace add https://github.com/csscoder/superpony
+/plugin install superpony@superpony
 ```
 
-Хук `SessionStart` активирует его со следующей сессии — инжектит корневую политику + skill-бутстрап и показывает `[SUPERPONY]` в статуслайне. Без marketplace, без `plugin.json`. Скилы вызываются без префикса (bare-name), поэтому кросс-ссылки остаются без префиксов.
+Обновление во всех проектах разом: `/plugin update superpony`.
+
+Хук `SessionStart` активирует политику со следующей сессии — инжектит корневую политику + skill-бутстрап. Скилы и команды вызываются с неймспейсом: `superpony:writing-plans`, `/superpony:review`. Директивы вызова скилов несут префикс `superpony:`; bare-name остаётся только в прозе.
 
 Нужен `node` в PATH (без него хуки молча no-op).
 
-> Предостережение: если в целевом проекте уже есть `.claude/settings.json` или одноимённые скилы, `cp -r` их перезатрёт. Сливай вручную, не затирай.
+Локальная разработка плагина: `claude --plugin-dir /path/to/superpony`.
+
+> Статуслайн `[SUPERPONY]` — опционально: плагин не может задать `statusLine` сам. Чтобы показать активный режим, добавь в свой `settings.json` команду на `<путь-установки-плагина>/hooks/superpony-statusline.sh`.
 
 ## Режимы и команды
 
@@ -50,19 +55,19 @@ cp -r .claude /path/to/your/project/
 | `full` | Лестница в силе, кратчайший diff, кратчайшее объяснение. По умолчанию. |
 | `ultra` | YAGNI-экстремист; выдай однострочник и оспорь остаток требования в том же ответе. |
 
-Переключение: `/superpony lite|full|ultra`. Выключение: `/superpony off`, `stop superpony` или `normal mode`.
+Переключение: `/superpony:mode lite|full|ultra`. Выключение: `/superpony:mode off`, `stop superpony` или `normal mode`.
 
 ### Кросс-модельный конвейер (явные гейты)
 
 Пишешь на Claude, ревьюишь и реализуешь на Gemini, финальное ревью — обратно на Claude. Каждый гейт ручной — следующий шаг запускаешь ты:
 
 ```
-/superpony-spec  "feature"   # 1. спека         Claude · brainstorming
-/superpony-check <spec>      # 2. ревью          Gemini · agy-review-plan
-/superpony-plan              # 3. план           Claude · writing-plans
-/superpony-check <plan>      # 4. ревью          Gemini · agy-review-plan
-/superpony-build <plan>      # 5. реализация     Gemini · agy-execute-plan
-/superpony-review            # 6. ревью          Claude · two-pass
+/superpony:spec  "feature"   # 1. спека         Claude · brainstorming
+/superpony:check <spec>      # 2. ревью          Gemini · agy-review-plan
+/superpony:plan              # 3. план           Claude · writing-plans
+/superpony:check <plan>      # 4. ревью          Gemini · agy-review-plan
+/superpony:build <plan>      # 5. реализация     Gemini · agy-execute-plan
+/superpony:review            # 6. ревью          Claude · two-pass
 ```
 
 Gemini-плечи переиспользуют твои скилы `agy-review-plan` / `agy-execute-plan` (нужен CLI `agy`). Хочешь только Claude? Пропусти `-build` — план исполнится прямо в сессии (executing-plans / subagent-driven-development).
@@ -71,33 +76,34 @@ Gemini-плечи переиспользуют твои скилы `agy-review-p
 
 | Команда | Что делает |
 |---|---|
-| `/superpony [mode]` | Активировать / переключить интенсивность (`lite\|full\|ultra\|off`). |
-| `/superpony-spec [topic]` | Написать дизайн-спеку (Claude · brainstorming). |
-| `/superpony-plan [spec]` | Превратить одобренную спеку в bite-sized план (Claude · writing-plans). |
-| `/superpony-check <path>` | Независимое ревью спеки/плана на Gemini (agy-review-plan). |
-| `/superpony-build <plan>` | Реализовать одобренный план на Gemini (agy-execute-plan). |
-| `/superpony-review` | Two-pass ревью кода в Claude: корректность, затем over-engineering, финал `net: -N lines possible`. |
-| `/superpony-audit` | Аудит существующего кода на over-engineering и удаляемую сложность. |
-| `/superpony-debt` | Список `ponytail:`-шорткатов как ledger долга с путями апгрейда. |
-| `/superpony-help` | Объяснить superpony: что это, режимы, команды, конвейер. |
+| `/superpony:mode [mode]` | Активировать / переключить интенсивность (`lite\|full\|ultra\|off`). |
+| `/superpony:spec [topic]` | Написать дизайн-спеку (Claude · brainstorming). |
+| `/superpony:plan [spec]` | Превратить одобренную спеку в bite-sized план (Claude · writing-plans). |
+| `/superpony:check <path>` | Независимое ревью спеки/плана на Gemini (agy-review-plan). |
+| `/superpony:build <plan>` | Реализовать одобренный план на Gemini (agy-execute-plan). |
+| `/superpony:review` | Two-pass ревью кода в Claude: корректность, затем over-engineering, финал `net: -N lines possible`. |
+| `/superpony:audit` | Аудит существующего кода на over-engineering и удаляемую сложность. |
+| `/superpony:debt` | Список `ponytail:`-шорткатов как ledger долга с путями апгрейда. |
+| `/superpony:help` | Объяснить superpony: что это, режимы, команды, конвейер. |
 
 ## Структура
 
 ```
-superpony/
-├─ .claude/                      # ← копируемый юнит
-│  ├─ skills/                    # единственный source of truth (слитое дерево)
-│  │  ├─ superpony/              # корневой оркестратор — каноничная политика
-│  │  ├─ writing-plans/          # + 🐴 ponytail overlay
-│  │  ├─ executing-plans/        # + 🐴 ponytail overlay
-│  │  ├─ requesting-code-review/ # + 🐴 ponytail overlay
-│  │  ├─ test-driven-development/# + 🐴 ponytail overlay
-│  │  ├─ ponytail*/              # скилы минимизации ponytail
-│  │  └─ ...                     # остальные скилы superpowers
-│  ├─ hooks/                     # node + bash: lib, activate, mode-tracker, statusline
-│  ├─ commands/                  # слэш-команды /superpony*
-│  └─ settings.json              # хуки SessionStart + UserPromptSubmit, statusLine
-├─ docs/                         # дизайн-спека + merge matrix
+superpony/                       # репозиторий = плагин + marketplace
+├─ .claude-plugin/               # манифесты плагина
+│  ├─ plugin.json
+│  └─ marketplace.json
+├─ skills/                       # единственный source of truth (слитое дерево)
+│  ├─ superpony/                 # корневой оркестратор — каноничная политика
+│  ├─ writing-plans/             # + 🐴 ponytail overlay
+│  ├─ executing-plans/           # + 🐴 ponytail overlay
+│  ├─ requesting-code-review/    # + 🐴 ponytail overlay
+│  ├─ test-driven-development/   # + 🐴 ponytail overlay
+│  ├─ ponytail*/                 # скилы минимизации ponytail
+│  └─ ...                        # остальные скилы superpowers
+├─ hooks/                        # node + bash + hooks.json (lib, activate, mode-tracker, statusline)
+├─ commands/                     # слэш-команды /superpony:*
+├─ docs/                         # дизайн-спека + merge matrix + план
 └─ eval/                         # promptfoo-харнес (superpony vs каждый родитель)
 ```
 
@@ -112,7 +118,7 @@ superpony/
 | «дроби на focused-файлы» vs «правки в 1 файл» (внутри `writing-plans`) | Новый файл только когда текущая структура не вмещает изменение; «меньше файлов» — тай-брейкер внутри нужного изменения, не лицензия плодить. |
 | «скаффолди тесты» vs «YAGNI на тестах» | Один runnable check — GREEN-минимум; без fixtures/фреймворков пока не попросят; mandated-check не удалять. |
 | «код первым, удали объяснение» vs процессные артефакты | Skill-анонсы, планы, review-отчёты, per-phase заметки обязательны — не «незапрошенная проза». Терсно в прозе, полно в процессе. |
-| префиксы неймспейсов | Все ссылки bare-name; реклама `/ponytail*` переписана на `/superpony*`. |
+| префиксы неймспейсов | Директивы вызова скилов несут `superpony:`; bare-name только в прозе. Реклама `/ponytail*` переписана на `/superpony:*`. |
 
 Полная справка: [`docs/merge-matrix.md`](docs/merge-matrix.md).
 

@@ -23,7 +23,7 @@ eval/
   prompt.js                 # builds [system, user] chat; picks variant by provider label
   assert-brevity.js         # deterministic LOC-of-code-blocks metric (smaller = better)
   system-prompts/
-    superpony.txt           # = .claude/skills/superpony/SKILL.md essence
+    superpony.txt           # = skills/superpony/SKILL.md essence
     superpowers.txt         # essence of using-superpowers + the brainstorm->finish pipeline
     ponytail.txt            # essence of the ponytail skill (the ladder + rules)
   acceptance/
