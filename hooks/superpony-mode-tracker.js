@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // superpony — UserPromptSubmit hook.
-// Detects `/superpony [lite|full|ultra|off]` and "stop superpony" / "normal mode",
-// updates the per-project flag, and re-injects the active policy on a change.
-// Plain `/superpony-review` etc. are slash commands routed to their skills; only
-// the bare `/superpony` toggles intensity.
+// Detects `/superpony[:mode] [lite|full|ultra|off]` and "stop superpony" / "normal
+// mode", updates the per-project flag, and re-injects the active policy on a change.
+// Plain `/superpony:review` etc. are slash commands routed to their skills; only
+// `/superpony` and `/superpony:mode` toggle intensity.
 
 const {
   getDefaultMode, normalizeMode, setMode, clearMode, emitContext, buildInstructions,
@@ -25,9 +25,9 @@ process.stdin.on('end', () => {
       return;
     }
 
-    // `/superpony` optionally followed by a level. Lookahead (?=\s|$) excludes
-    // `/superpony-review` and friends (hyphen is not whitespace).
-    const m = lower.match(/^[/@$]superpony(?=\s|$)(?:\s+(\w+))?/);
+    // `/superpony` or `/superpony:mode`, optionally followed by a level. Lookahead
+    // (?=\s|$) excludes `/superpony-review` / `/superpony:review` (`:review` ≠ `:mode`).
+    const m = lower.match(/^[/@$]superpony(?::mode)?(?=\s|$)(?:\s+(\w+))?/);
     if (m) {
       const arg = m[1] || '';
       if (arg === 'off') {

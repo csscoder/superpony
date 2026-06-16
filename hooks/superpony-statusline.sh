@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # superpony — statusline badge showing the active intensity.
-# Reads the per-project flag .claude/.superpony-mode (relative to this script).
-flag="$(cd "$(dirname "$0")/.." && pwd)/.superpony-mode"
+# Reads the per-project flag at $CLAUDE_PROJECT_DIR/.claude/.superpony-mode (or $PWD).
+flag="${CLAUDE_PROJECT_DIR:-$PWD}/.claude/.superpony-mode"
 [ -f "$flag" ] || exit 0
 
 mode=$(head -n1 "$flag" | tr -d '[:space:]')

@@ -22,12 +22,16 @@ function getDefaultMode() {
 }
 
 // ---- runtime: per-project flag + hook output ----
-// Flag lives inside the project's .claude so it travels when you copy .claude/
-// and is git-ignored as per-session state. __dirname = <project>/.claude/hooks.
-const FLAG_PATH = path.join(__dirname, '..', '.superpony-mode');
+// Flag lives in the TARGET project's .claude (CLAUDE_PROJECT_DIR), not the plugin
+// install dir — so the mode is per-project. Git-ignored as per-session state.
+const PROJECT_DIR = process.env.CLAUDE_PROJECT_DIR || process.cwd();
+const FLAG_PATH = path.join(PROJECT_DIR, '.claude', '.superpony-mode');
 
 function setMode(mode) {
-  try { fs.writeFileSync(FLAG_PATH, String(mode)); } catch (e) { /* best-effort */ }
+  try {
+    fs.mkdirSync(path.dirname(FLAG_PATH), { recursive: true });
+    fs.writeFileSync(FLAG_PATH, String(mode));
+  } catch (e) { /* best-effort */ }
 }
 
 function readMode() {
@@ -65,7 +69,7 @@ function buildInstructions(mode) {
   const banner =
     'SUPERPONY ACTIVE — intensity: ' + level.toUpperCase() + '. ' +
     'Disciplined process (Superpowers) + lazy footprint (Ponytail). ' +
-    'Switch: /superpony lite|full|ultra. Off: "stop superpony" / "normal mode".';
+    'Switch: /superpony:mode lite|full|ultra. Off: "stop superpony" / "normal mode".';
 
   return [
     banner,
