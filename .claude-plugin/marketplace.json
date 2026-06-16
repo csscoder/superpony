@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "superpony",
+  "description": "Disciplined process, lazy footprint. Fuses Superpowers + Ponytail into one Claude Code plugin.",
+  "owner": {
+    "name": "Aleksandr Zidyganov"
+  },
+  "plugins": [
+    {
+      "name": "superpony",
+      "description": "Disciplined process (Superpowers) + lazy footprint (Ponytail).",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}
