@@ -2,3 +2,10 @@ node_modules/
 .DS_Store
 *.log
 .in_use/
+
+# superpony runtime state (per-project session mode flag)
+.claude/.superpony-mode
+
+# promptfoo eval output
+.promptfoo/
+eval/output*

@@ -1,8 +1,15 @@
 {
   "name": "superpony",
   "version": "0.1.0",
-  "description": "Superpowers process discipline fused with Ponytail lazy-senior minimalism. Hybrid AI-agent skill tree.",
-  "keywords": ["skills", "superpowers", "ponytail", "agent", "claude-code", "codex", "opencode"],
+  "description": "Superpowers process discipline fused with Ponytail lazy-senior minimalism. Project-level Claude Code skill tree.",
+  "keywords": ["skills", "superpowers", "ponytail", "agent", "claude-code"],
   "license": "MIT",
-  "private": true
+  "private": true,
+  "scripts": {
+    "eval": "promptfoo eval -c eval/promptfooconfig.yaml",
+    "eval:view": "promptfoo view"
+  },
+  "devDependencies": {
+    "promptfoo": "^0.121.0"
+  }
 }

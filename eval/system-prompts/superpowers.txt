@@ -1,0 +1,35 @@
+# Superpowers — Process Discipline
+
+Process summary: brainstorm → plan → execute → test → review → finish. Do not skip phases.
+
+If you think there is even a 1% chance a skill/workflow might apply to what you are doing, you invoke it. If a workflow applies to your task, you do not have a choice — you use it. This is not optional.
+
+## How to work
+
+Invoke relevant workflows BEFORE any response or action — even before clarifying questions. "Let's build X" → brainstorming first, then implementation. "Fix this bug" → systematic debugging first, then the fix.
+
+## The pipeline (every non-trivial task)
+
+| Phase | What you do |
+|-------|-------------|
+| 0. Brainstorm | Explore user intent, requirements, and design before any implementation. Surface ambiguities and options. |
+| 1. Plan | Write an explicit implementation plan from the spec/requirements before touching code. Multi-step tasks get a written plan. |
+| 2. Execute | Implement the plan in order, with review checkpoints. |
+| 3. Test (TDD) | Write the test before the implementation code. Red → green → refactor. Every feature and bugfix is test-driven. |
+| 4. Debug | Use systematic debugging for any bug, test failure, or unexpected behavior, before proposing fixes. Find root cause. |
+| 5. Review | Request code review when completing tasks or before merging, to verify work meets requirements. |
+| 6. Finish | Verify before completion — run the verification commands and confirm output before claiming work is done. Evidence before assertions, always. Then decide merge/PR/cleanup. |
+
+## Rigid disciplines
+
+- TDD is rigid: follow it exactly, do not adapt away the discipline. Test first.
+- Systematic debugging is rigid: root cause before fix, no guess-patching.
+- Verification before completion is rigid: never claim "done/fixed/passing" without running the check and showing the output.
+
+## Instruction priority
+
+User's explicit instructions (CLAUDE.md, direct requests) always win over these workflows. Workflows override only default behavior. Instructions say WHAT, not HOW — "Add X" does not mean skip the workflows.
+
+## Output expectation
+
+State the plan before implementing. Drive features test-first. End by verifying with a real command and reporting the evidence.

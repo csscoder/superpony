@@ -1,0 +1,151 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# Superpony eval harness: compare 3 variants on the same coding tasks.
+#   superpony    = process discipline + minimalism (the fusion under test)
+#   superpowers  = process discipline only (baseline parent)
+#   ponytail     = minimalism only (baseline parent)
+# Thesis: superpony should beat ponytail on PROCESS and beat superpowers on BREVITY.
+#
+# Mechanism: all three providers are the SAME model. They differ only in system prompt.
+# prompt.js reads system-prompts/<label>.txt based on each provider's `label`, so the
+# system prompts stay single-source in those files (not duplicated into this config).
+#
+# ponytail: one model under test, not a model sweep — we measure the SKILL TREE's effect,
+#   not model quality. Add more providers only if you want cross-model robustness.
+
+description: superpony vs superpowers vs ponytail on representative coding tasks
+
+prompts:
+  - id: file://prompt.js
+    label: variant_prompt
+
+# Same model for all three; only the system prompt (via label) differs.
+# ponytail: hard-coded model id — bump it in one place when the default model changes.
+providers:
+  - id: anthropic:messages:claude-sonnet-4-6
+    label: superpony
+    prompts: [variant_prompt]
+    config:
+      temperature: 0
+      max_tokens: 4096
+  - id: anthropic:messages:claude-sonnet-4-6
+    label: superpowers
+    prompts: [variant_prompt]
+    config:
+      temperature: 0
+      max_tokens: 4096
+  - id: anthropic:messages:claude-sonnet-4-6
+    label: ponytail
+    prompts: [variant_prompt]
+    config:
+      temperature: 0
+      max_tokens: 4096
+
+# Assertions applied to EVERY task. Per-task extras live under each test below.
+# The grader for llm-rubric is Claude automatically when only ANTHROPIC_API_KEY is set.
+defaultTest:
+  assert:
+    # (i) PROCESS ADHERENCE — did it work like a disciplined senior, not cowboy-code?
+    - type: llm-rubric
+      metric: process
+      value: >
+        Score the RESPONSE for engineering process discipline on a 0-1 scale.
+        Award credit for: stating a short plan or approach BEFORE the code (even one
+        line of "plan: ..."); leaving at least ONE runnable check behind for non-trivial
+        logic (an assert-based self-check, a __main__/demo, or a small test); and not
+        skipping straight to a code dump with no framing. PENALIZE: no plan at all on a
+        non-trivial task; no check/test for logic that clearly needs one; claiming
+        "done/works" with no evidence. A trivial one-liner needs no plan or test and
+        should not be penalized for omitting them. Output PASS only if score >= 0.6.
+
+    # (ii) BREVITY — smaller is better. Deterministic LOC proxy (see assert-brevity.js).
+    - type: javascript
+      metric: brevity
+      value: file://assert-brevity.js
+
+    # (iii) NO UNREQUESTED SCOPE — the minimalism guard.
+    - type: llm-rubric
+      metric: minimalism
+      value: >
+        Score the RESPONSE for staying within scope on a 0-1 scale. PASS (high score)
+        when the solution adds only what the task asked for. PENALIZE HARD (low score)
+        for any of: adding a NEW third-party dependency when the standard library or a
+        native feature would do; introducing speculative abstractions (an interface/
+        class/factory with a single caller, config for a constant, plugin systems);
+        building unrequested features ("while we're here" extras, extra CLI flags,
+        logging/metrics/caching nobody asked for); creating multiple files where one
+        function suffices. Using the standard library or an ALREADY-present dependency
+        is GOOD, not a penalty. Output PASS only if score >= 0.6.
+
+tests:
+  - description: input-validation
+    vars:
+      task: >
+        Here is a Python function. Add input validation to it so it rejects bad input
+        at the boundary. Keep changes minimal.
+
+        def withdraw(balance, amount):
+            return balance - amount
+
+  - description: cli-flag-parser
+    vars:
+      task: >
+        Write a small command-line flag parser in Python for a script that accepts
+        --name (string, required) and --count (integer, default 1). On bad input it
+        should print a clear error and exit non-zero.
+    assert:
+      # Native stdlib (argparse) covers this entirely; a hand-rolled parser is over-build.
+      - type: llm-rubric
+        metric: minimalism
+        value: >
+          PASS only if the solution uses Python's standard-library argparse (or an
+          equally minimal stdlib approach). FAIL if it hand-rolls flag parsing from
+          scratch or pulls in a third-party CLI library (click, typer, docopt) for
+          this trivial case.
+
+  - description: debounce-util
+    vars:
+      task: >
+        Add a debounce utility in JavaScript: debounce(fn, wait) returns a function
+        that delays calling fn until `wait` ms have passed since the last call.
+    assert:
+      - type: llm-rubric
+        metric: minimalism
+        value: >
+          PASS if debounce is a single small function using setTimeout/clearTimeout.
+          FAIL if it adds a class, an options object with unrequested features
+          (leading/trailing/maxWait), or pulls in lodash or another dependency.
+
+  - description: config-loader
+    vars:
+      task: >
+        Wire a config loader for a Node.js app: read a JSON config file from a path,
+        fall back to sensible defaults for any missing keys, and throw a clear error
+        if the file exists but is invalid JSON.
+    assert:
+      - type: llm-rubric
+        metric: minimalism
+        value: >
+          PASS if it uses Node's built-in fs and JSON.parse with a simple defaults
+          merge. FAIL if it adds a config library (dotenv/convict/nconf/cosmiconfig),
+          builds a schema-validation layer nobody asked for, or creates a config class
+          hierarchy.
+
+  - description: slugify-util
+    vars:
+      task: >
+        Add a slugify(text) helper in Python that turns a title into a URL slug
+        (lowercase, spaces and punctuation to single hyphens, trim leading/trailing
+        hyphens).
+
+  - description: retry-wrapper
+    vars:
+      task: >
+        Add a retry helper in Python: retry(fn, attempts=3) that calls fn() and retries
+        on exception up to `attempts` times, then re-raises the last error.
+    assert:
+      - type: llm-rubric
+        metric: minimalism
+        value: >
+          PASS if it is a small loop using stdlib only. FAIL if it adds a third-party
+          retry library (tenacity/backoff), builds configurable backoff/jitter strategy
+          objects nobody asked for, or turns it into a decorator framework.

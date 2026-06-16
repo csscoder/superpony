@@ -1,0 +1,7 @@
+# promptfoo run artifacts + deps — never commit
+.promptfoo/
+output.json
+output.yaml
+output*.json
+output*.yaml
+node_modules/
