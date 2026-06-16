@@ -41,13 +41,13 @@ Invoke the matching sub-skill at each phase. The Superpowers skill defines the p
 
 | Phase | Superpowers skill | Ponytail constraint applied |
 |-------|-------------------|------------------------------|
-| 0. Frame | `brainstorming` | Challenge the requirement first: "do we need X, or does Y already cover it?" Fewer, simpler options. |
-| 1. Plan | `writing-plans` | Plan the **smallest viable diff**. State why it can't be smaller. Prefer 1-file edits over new modules. |
-| 2. Build | `executing-plans` | No scope creep, no "while we're here" refactors, no abstractions with one caller. Mark shortcuts `// ponytail: <ceiling>, <upgrade path>`. |
-| 3. Test | `test-driven-development` | ONE runnable check per non-trivial unit. No fixtures/frameworks unless asked. YAGNI applies to tests too. |
-| 4. Debug | `systematic-debugging` | Root cause, smallest fix. Don't add defensive layers the bug doesn't justify. |
-| 5. Review | `ponytail-review` / `requesting-code-review` | Hunt deletions: stdlib, native, yagni, shrink. End with `net: -N lines possible`. |
-| 6. Finish | `finishing-a-development-branch` | Smallest PR, narrowest blast radius. |
+| 0. Frame | `superpony:brainstorming` | Challenge the requirement first: "do we need X, or does Y already cover it?" Fewer, simpler options. |
+| 1. Plan | `superpony:writing-plans` | Plan the **smallest viable diff**. State why it can't be smaller. Prefer 1-file edits over new modules. |
+| 2. Build | `superpony:executing-plans` | No scope creep, no "while we're here" refactors, no abstractions with one caller. Mark shortcuts `// ponytail: <ceiling>, <upgrade path>`. |
+| 3. Test | `superpony:test-driven-development` | ONE runnable check per non-trivial unit. No fixtures/frameworks unless asked. YAGNI applies to tests too. |
+| 4. Debug | `superpony:systematic-debugging` | Root cause, smallest fix. Don't add defensive layers the bug doesn't justify. |
+| 5. Review | `superpony:ponytail-review` / `superpony:requesting-code-review` | Hunt deletions: stdlib, native, yagni, shrink. End with `net: -N lines possible`. |
+| 6. Finish | `superpony:finishing-a-development-branch` | Smallest PR, narrowest blast radius. |
 
 ## Hard constraints (always on)
 

@@ -10,7 +10,7 @@ description: Use when completing tasks, implementing major features, or before m
 Run TWO complementary passes — keep them separate, never merge:
 
 1. **Correctness pass** (this skill / the reviewer subagent): bugs, security, requirements coverage.
-2. **Over-engineering pass** (`ponytail-review`): hunt deletions only — `delete:` / `stdlib:` / `native:` / `yagni:` / `shrink:`. End with `net: -N lines possible`.
+2. **Over-engineering pass** (`superpony:ponytail-review`): hunt deletions only — `delete:` / `stdlib:` / `native:` / `yagni:` / `shrink:`. End with `net: -N lines possible`.
 
 A single assert-based self-check or smoke test is the lazy minimum — never flag it for deletion.
 
