@@ -1,138 +1,140 @@
 # 🦄🐴 Superpony
 
-**Процессная дисциплина Superpowers × ленивый минимализм сеньора Ponytail — слиты в одно дерево скилов для Claude Code.**
+**English** · [Русский](README.ru.md)
 
-> Тщательно в рассуждениях. Минимально в изменениях. Лучший код — тот, что ты не написал, но всё равно спланировал, проверил и отревьюил как сеньор.
+**Superpowers process discipline × Ponytail senior-dev lazy minimalism — fused into one skill tree for Claude Code.**
 
-Два родителя, два вопроса:
+> Thorough in reasoning. Minimal in changes. The best code is the code you never wrote — but you still planned, verified, and reviewed it like a senior.
 
-- [`obra/superpowers`](https://github.com/obra/superpowers) — **КАК работать**: brainstorm → plan → execute → test → review → finish, субагенты, TDD, верификация, stop-when-blocked.
-- [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail) — **СКОЛЬКО строить**: YAGNI, stdlib/native-first, кратчайший рабочий diff, никаких спекулятивных абстракций.
+Two parents, two questions:
 
-Они отвечают на разные вопросы, поэтому не конфликтуют. Superpony связывает их так, что строгость и бережливость усиливают друг друга.
+- [`obra/superpowers`](https://github.com/obra/superpowers) — **HOW to work**: brainstorm → plan → execute → test → review → finish, subagents, TDD, verification, stop-when-blocked.
+- [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail) — **HOW MUCH to build**: YAGNI, stdlib/native-first, shortest working diff, no speculative abstractions.
 
-| По отдельности | Слабое место | Фикс Superpony |
+They answer different questions, so they don't conflict. Superpony binds them so that rigor and frugality reinforce each other.
+
+| On its own | Weak spot | Superpony fix |
 |---|---|---|
-| Superpowers | дисциплина, но склонность к over-engineering (скаффолдинг, абстракции, большие diff'ы) | лестница Ponytail ограничивает footprint на каждой фазе |
-| Ponytail | минимализм, но без дисциплины (нет плана, нет verification-гейта, дрейф scope) | конвейер Superpowers добавляет plan → test → review → finish |
+| Superpowers | discipline, but prone to over-engineering (scaffolding, abstractions, large diffs) | Ponytail's ladder caps footprint at every phase |
+| Ponytail | minimalism, but no discipline (no plan, no verification gate, scope drift) | Superpowers' pipeline adds plan → test → review → finish |
 
-## Единое правило решения
+## The single decision rule
 
-Для любой задачи, до того как трогать код:
+For any task, before touching code:
 
-1. **Process-gate (Superpowers):** тривиально (rename, однострочный фикс, формат) → просто сделай, оставь один check если логика неочевидна. Нетривиально → полный конвейер, без пропуска фаз.
-2. **Scope-gate (лестница Ponytail):** остановись на первой ступени, которая держит —
+1. **Process gate (Superpowers):** trivial (rename, one-line fix, formatting) → just do it, leave one check if the logic is non-obvious. Non-trivial → full pipeline, no skipped phases.
+2. **Scope gate (Ponytail ladder):** stop at the first rung that holds —
    `YAGNI → stdlib → native/framework feature → installed dep → one line → minimal custom code`.
 
-Каноничная политика: [`skills/superpony/SKILL.md`](skills/superpony/SKILL.md).
+Canonical policy: [`skills/superpony/SKILL.md`](skills/superpony/SKILL.md).
 
-## Установка
+## Install
 
-Superpony — **плагин Claude Code**, ставится и обновляется через git-marketplace:
+Superpony is a **Claude Code plugin**, installed and updated through a git marketplace:
 
 ```sh
 /plugin marketplace add https://github.com/csscoder/superpony
 /plugin install superpony@superpony
 ```
 
-Обновление во всех проектах разом: `/plugin update superpony`.
+Update across all projects at once: `/plugin update superpony`.
 
-Хук `SessionStart` активирует политику со следующей сессии — инжектит корневую политику + skill-бутстрап. Скилы и команды вызываются с неймспейсом: `superpony:writing-plans`, `/superpony:review`. Директивы вызова скилов несут префикс `superpony:`; bare-name остаётся только в прозе.
+The `SessionStart` hook activates the policy from the next session — it injects the root policy + skill bootstrap. Skills and commands are namespaced: `superpony:writing-plans`, `/superpony:review`. Skill-invocation directives carry the `superpony:` prefix; bare names stay in prose only.
 
-Нужен `node` в PATH (без него хуки молча no-op).
+Requires `node` in PATH (without it the hooks silently no-op).
 
-Локальная разработка плагина: `claude --plugin-dir /path/to/superpony`.
+Local plugin development: `claude --plugin-dir /path/to/superpony`.
 
-> Статуслайн `[SUPERPONY]` — опционально: плагин не может задать `statusLine` сам. Чтобы показать активный режим, добавь в свой `settings.json` команду на `<путь-установки-плагина>/hooks/superpony-statusline.sh`.
+> The `[SUPERPONY]` statusline is optional: the plugin can't set `statusLine` itself. To show the active mode, add a command pointing to `<plugin-install-path>/hooks/superpony-statusline.sh` in your own `settings.json`.
 
-## Режимы и команды
+## Modes and commands
 
-Интенсивность регулирует, насколько агрессивно минимизировать и насколько терсно отвечать. **Процессная дисциплина действует всегда.** По умолчанию `full`. Переопредели дефолт через `SUPERPONY_DEFAULT_MODE`.
+Intensity controls how aggressively to minimize and how tersely to answer. **Process discipline is always on.** Default is `full`. Override the default via `SUPERPONY_DEFAULT_MODE`.
 
-| Режим | Поведение — только про scope |
+| Mode | Behavior — scope only |
 |---|---|
-| `lite` | Строй что просили; назови более ленивую альтернативу одной строкой. |
-| `full` | Лестница в силе, кратчайший diff, кратчайшее объяснение. По умолчанию. |
-| `ultra` | YAGNI-экстремист; выдай однострочник и оспорь остаток требования в том же ответе. |
+| `lite` | Build what's asked; name the lazier alternative in one line. |
+| `full` | Ladder enforced, shortest diff, shortest explanation. Default. |
+| `ultra` | YAGNI extremist; ship the one-liner and challenge the rest of the requirement in the same breath. |
 
-Переключение: `/superpony:mode lite|full|ultra`. Выключение: `/superpony:mode off`, `stop superpony` или `normal mode`.
+Switch: `/superpony:mode lite|full|ultra`. Turn off: `/superpony:mode off`, `stop superpony`, or `normal mode`.
 
-### Кросс-модельный конвейер (явные гейты)
+### Cross-model pipeline (explicit gates)
 
-Пишешь на Claude, ревьюишь и реализуешь на Gemini, финальное ревью — обратно на Claude. Каждый гейт ручной — следующий шаг запускаешь ты:
+Write on Claude, review and implement on Gemini, final review back on Claude. Every gate is manual — you trigger the next step:
 
 ```
-/superpony:spec  "feature"   # 1. спека         Claude · brainstorming
-/superpony:check <spec>      # 2. ревью          Gemini · agy-review-plan
-/superpony:plan              # 3. план           Claude · writing-plans
-/superpony:check <plan>      # 4. ревью          Gemini · agy-review-plan
-/superpony:build <plan>      # 5. реализация     Gemini · agy-execute-plan
-/superpony:review            # 6. ревью          Claude · two-pass
+/superpony:spec  "feature"   # 1. spec            Claude · brainstorming
+/superpony:check <spec>      # 2. review          Gemini · agy-review-plan
+/superpony:plan              # 3. plan            Claude · writing-plans
+/superpony:check <plan>      # 4. review          Gemini · agy-review-plan
+/superpony:build <plan>      # 5. implementation  Gemini · agy-execute-plan
+/superpony:review            # 6. review          Claude · two-pass
 ```
 
-Gemini-плечи переиспользуют твои скилы `agy-review-plan` / `agy-execute-plan` (нужен CLI `agy`). Хочешь только Claude? Пропусти `-build` — план исполнится прямо в сессии (executing-plans / subagent-driven-development).
+The Gemini legs reuse your `agy-review-plan` / `agy-execute-plan` skills (requires the `agy` CLI). Claude only? Skip `-build` — the plan runs right in the session (executing-plans / subagent-driven-development).
 
-### Все команды
+### All commands
 
-| Команда | Что делает |
+| Command | What it does |
 |---|---|
-| `/superpony:mode [mode]` | Активировать / переключить интенсивность (`lite\|full\|ultra\|off`). |
-| `/superpony:spec [topic]` | Написать дизайн-спеку (Claude · brainstorming). |
-| `/superpony:plan [spec]` | Превратить одобренную спеку в bite-sized план (Claude · writing-plans). |
-| `/superpony:check <path>` | Независимое ревью спеки/плана на Gemini (agy-review-plan). |
-| `/superpony:build <plan>` | Реализовать одобренный план на Gemini (agy-execute-plan). |
-| `/superpony:review` | Two-pass ревью кода в Claude: корректность, затем over-engineering, финал `net: -N lines possible`. |
-| `/superpony:audit` | Аудит существующего кода на over-engineering и удаляемую сложность. |
-| `/superpony:debt` | Список `ponytail:`-шорткатов как ledger долга с путями апгрейда. |
-| `/superpony:help` | Объяснить superpony: что это, режимы, команды, конвейер. |
+| `/superpony:mode [mode]` | Activate / switch intensity (`lite\|full\|ultra\|off`). |
+| `/superpony:spec [topic]` | Write a design spec (Claude · brainstorming). |
+| `/superpony:plan [spec]` | Turn an approved spec into a bite-sized plan (Claude · writing-plans). |
+| `/superpony:check <path>` | Independent review of a spec/plan on Gemini (agy-review-plan). |
+| `/superpony:build <plan>` | Implement an approved plan on Gemini (agy-execute-plan). |
+| `/superpony:review` | Two-pass code review on Claude: correctness, then over-engineering, ending in `net: -N lines possible`. |
+| `/superpony:audit` | Audit existing code for over-engineering and removable complexity. |
+| `/superpony:debt` | List `ponytail:` shortcuts as a debt ledger with upgrade paths. |
+| `/superpony:help` | Explain superpony: what it is, modes, commands, pipeline. |
 
-## Структура
+## Structure
 
 ```
-superpony/                       # репозиторий = плагин + marketplace
-├─ .claude-plugin/               # манифесты плагина
+superpony/                       # repository = plugin + marketplace
+├─ .claude-plugin/               # plugin manifests
 │  ├─ plugin.json
 │  └─ marketplace.json
-├─ skills/                       # единственный source of truth (слитое дерево)
-│  ├─ superpony/                 # корневой оркестратор — каноничная политика
+├─ skills/                       # single source of truth (fused tree)
+│  ├─ superpony/                 # root orchestrator — canonical policy
 │  ├─ writing-plans/             # + 🐴 ponytail overlay
 │  ├─ executing-plans/           # + 🐴 ponytail overlay
 │  ├─ requesting-code-review/    # + 🐴 ponytail overlay
 │  ├─ test-driven-development/   # + 🐴 ponytail overlay
-│  ├─ ponytail*/                 # скилы минимизации ponytail
-│  └─ ...                        # остальные скилы superpowers
+│  ├─ ponytail*/                 # ponytail minimization skills
+│  └─ ...                        # remaining superpowers skills
 ├─ hooks/                        # node + bash + hooks.json (lib, activate, mode-tracker, statusline)
-├─ commands/                     # слэш-команды /superpony:*
-├─ docs/                         # дизайн-спека + merge matrix + план
-└─ eval/                         # promptfoo-харнес (superpony vs каждый родитель)
+├─ commands/                     # /superpony:* slash commands
+├─ docs/                         # design spec + merge matrix + plan
+└─ eval/                         # promptfoo harness (superpony vs each parent)
 ```
 
-## Как разрешены конфликты
+## How conflicts are resolved
 
-Каноничная политика живёт **только** в корневом скиле. Overlay'и добавляют scope-кап на footprint-критичных фазах и несут локальный кап, чтобы он выживал при прямом/субагентном входе; они не повторяют всю политику.
+Canonical policy lives **only** in the root skill. Overlays add a scope cap on footprint-critical phases and carry a local cap so it survives direct/subagent entry; they don't restate the whole policy.
 
-| Напряжение | Разрешение |
+| Tension | Resolution |
 |---|---|
-| «вызови скил до ЛЮБОГО ответа» vs тривиальный путь | superpony инжектится каждую сессию → это удовлетворяет skill-check; тривиальной задаче не нужен ещё один скил. |
-| «исчерпывающий план» vs «наименьшее жизнеспособное изменение» | Исчерпывающий = *полный и однозначный*, не *большой*. Минимальный план, точный код. |
-| «дроби на focused-файлы» vs «правки в 1 файл» (внутри `writing-plans`) | Новый файл только когда текущая структура не вмещает изменение; «меньше файлов» — тай-брейкер внутри нужного изменения, не лицензия плодить. |
-| «скаффолди тесты» vs «YAGNI на тестах» | Один runnable check — GREEN-минимум; без fixtures/фреймворков пока не попросят; mandated-check не удалять. |
-| «код первым, удали объяснение» vs процессные артефакты | Skill-анонсы, планы, review-отчёты, per-phase заметки обязательны — не «незапрошенная проза». Терсно в прозе, полно в процессе. |
-| префиксы неймспейсов | Директивы вызова скилов несут `superpony:`; bare-name только в прозе. Реклама `/ponytail*` переписана на `/superpony:*`. |
+| "invoke a skill before ANY response" vs the trivial path | superpony is injected every session → that satisfies the skill check; a trivial task needs no further skill. |
+| "exhaustive plan" vs "smallest viable change" | Exhaustive = *complete and unambiguous*, not *large*. Minimal plan, precise code. |
+| "split into focused files" vs "1-file edits" (inside `writing-plans`) | New file only when the current structure can't hold the change; "fewer files" is a tie-breaker within the needed change, not a license to proliferate. |
+| "scaffold tests" vs "YAGNI on tests" | One runnable check — the GREEN minimum; no fixtures/frameworks until asked; never delete a mandated check. |
+| "code first, delete the explanation" vs process artifacts | Skill announcements, plans, review reports, per-phase notes are mandatory — not "unrequested prose". Terse in prose, complete in process. |
+| namespace prefixes | Skill-invocation directives carry `superpony:`; bare names in prose only. `/ponytail*` advertising rewritten to `/superpony:*`. |
 
-Полная справка: [`docs/merge-matrix.md`](docs/merge-matrix.md).
+Full reference: [`docs/merge-matrix.md`](docs/merge-matrix.md).
 
 ## Eval
 
-`promptfoo`-харнес сравнивает superpony vs только-superpowers vs только-ponytail (одна модель, разные system-промпты) на одинаковых coding-задачах, оценивая `process`, `brevity` (LOC) и `minimalism`. Плюс ручной acceptance-тест ([`eval/acceptance/react-todo-list.md`](eval/acceptance/react-todo-list.md)): brainstorming должен авто-триггериться, затем минимальная реализация.
+A `promptfoo` harness compares superpony vs superpowers-only vs ponytail-only (one model, different system prompts) on identical coding tasks, scoring `process`, `brevity` (LOC), and `minimalism`. Plus a manual acceptance test ([`eval/acceptance/react-todo-list.md`](eval/acceptance/react-todo-list.md)): brainstorming must auto-trigger, then a minimal implementation.
 
 ```sh
 export ANTHROPIC_API_KEY=sk-ant-...
-npm run eval        # или: npx --yes promptfoo@latest eval -c eval/promptfooconfig.yaml
+npm run eval        # or: npx --yes promptfoo@latest eval -c eval/promptfooconfig.yaml
 ```
 
-Детали: [`eval/README.md`](eval/README.md).
+Details: [`eval/README.md`](eval/README.md).
 
-## Лицензия
+## License
 
-MIT. Оба родителя — MIT.
+MIT. Both parents are MIT.
