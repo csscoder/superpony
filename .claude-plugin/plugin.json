@@ -1,0 +1,12 @@
+{
+  "name": "superpony",
+  "version": "0.1.0",
+  "description": "Disciplined process (Superpowers) fused with lazy-footprint minimalism (Ponytail), as one Claude Code plugin.",
+  "author": {
+    "name": "Aleksandr Zidyganov"
+  },
+  "homepage": "https://github.com/csscoder/superpony",
+  "repository": "https://github.com/csscoder/superpony",
+  "license": "MIT",
+  "keywords": ["skills", "superpowers", "ponytail", "process", "minimalism", "claude-code"]
+}

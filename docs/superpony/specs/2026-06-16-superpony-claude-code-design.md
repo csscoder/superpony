@@ -25,6 +25,8 @@ code frugality reinforce each other, with every contradiction resolved in the ar
 
 ### 1. Identity — project files, not a plugin; bare-name refs
 
+> **Update 2026-06-16 (superseded):** Decision #1 reversed — superpony now ships as a Claude Code plugin (`.claude-plugin/plugin.json` + `marketplace.json`) for one-source install/update across projects. Skill-invocation directives are now `superpony:`-prefixed; bare-name remains only in prose. See `docs/superpony/plans/2026-06-16-superpony-as-plugin.md`.
+
 Superpony ships as the `.claude/` directory, copied into any project
 (`cp -r .claude /path/to/project/`). No marketplace, no `plugin.json`. A plugin would
 force a `superpony:` invocation prefix; project skills are invoked unprefixed, so all
@@ -118,7 +120,7 @@ eval/                           # promptfoo harness + acceptance test
 - **`vendor/` + upstream re-sync** — dropped. Superpony is standalone, maintained
   directly; `.claude/skills/` is the only source of truth.
 - **Plugin packaging (`plugin.json`, marketplace)** — out of scope by design; project
-  files are the distribution unit.
+  files are the distribution unit. *(Reversed 2026-06-16 — see note under §1.)*
 - **Ponytail XDG `config.json`** — dropped as YAGNI; env var + flag file suffice.
 - **Per-machine persisted default** — add a `config.json` resolver in
   `superpony-config.js` if ever needed.
