@@ -9,4 +9,4 @@ Use the `brainstorming` skill to turn "{{args}}" into a validated design spec.
 - One question at a time; converge on architecture, components, data flow, error handling, testing.
 - Save the spec to `docs/superpony/specs/YYYY-MM-DD-<topic>-design.md` and STOP for my approval.
 
-Pipeline: **spec (here)** → `/superpony-check <spec>` (Gemini review) → `/superpony-plan` → `/superpony-check <plan>` → `/superpony-build <plan>` (Gemini) → `/superpony-review` (Claude).
+Pipeline: **spec (here)** → `/superpony:check <spec>` (Gemini review) → `/superpony:plan` → `/superpony:check <plan>` → `/superpony:build <plan>` (Gemini) → `/superpony:review` (Claude).

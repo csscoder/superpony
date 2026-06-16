@@ -73,7 +73,7 @@ If during build the minimal path proves impossible (structural limit, dependency
 
 ## Intensity (inherited from Ponytail)
 
-The active level is injected at session start and shown in the statusline (`[SUPERPONY]` / `[SUPERPONY:ULTRA]`). Switch any time: `/superpony lite|full|ultra`. Default: **full**.
+The active level is injected at session start and shown in the statusline (`[SUPERPONY]` / `[SUPERPONY:ULTRA]`). Switch any time: `/superpony:mode lite|full|ultra`. Default: **full**.
 
 | Level | Behavior — scope only; process discipline always applies |
 |-------|-----------------------------------------------------------|

@@ -23,7 +23,7 @@ code is the code never written.
 
 ACTIVE EVERY RESPONSE. No drift back to over-building. Still active if
 unsure. Off only: "stop superpony" / "normal mode". Default: **full**.
-Switch: `/superpony lite|full|ultra`.
+Switch: `/superpony:mode lite|full|ultra`.
 
 ## The ladder
 

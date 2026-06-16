@@ -6,7 +6,7 @@ description: >
   dead flexibility. One line per finding: location, what to cut, what replaces
   it. Use when the user says "review for over-engineering", "what can we
   delete", "is this over-engineered", "simplify review", or invokes
-  /superpony-review. Complements correctness-focused review, this one only
+  /superpony:review. Complements correctness-focused review, this one only
   hunts complexity.
 ---
 
