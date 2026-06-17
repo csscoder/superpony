@@ -64,12 +64,15 @@ function stripFrontmatter(s) {
   return String(s || '').replace(/^---[\s\S]*?---\s*/, '');
 }
 
-function buildInstructions(mode) {
-  const level = normalizeMode(mode) || DEFAULT_MODE;
-  const banner =
-    'SUPERPONY ACTIVE — intensity: ' + level.toUpperCase() + '. ' +
+function defaultBanner(level) {
+  return 'SUPERPONY ACTIVE — intensity: ' + level.toUpperCase() + '. ' +
     'Disciplined process (Superpowers) + lazy footprint (Ponytail). ' +
     'Switch: /superpony:mode lite|full|ultra. Off: "stop superpony" / "normal mode".';
+}
+
+function buildInstructions(mode, opts = {}) {
+  const level = normalizeMode(mode) || DEFAULT_MODE;
+  const banner = opts.banner || defaultBanner(level);
 
   return [
     banner,
