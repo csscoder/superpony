@@ -54,7 +54,7 @@ function emitContext(event, context) {
 // Read live from the skill files so the injection never drifts from the skills.
 const SKILLS = path.join(__dirname, '..', 'skills');
 const ROOT_SKILL = path.join(SKILLS, 'superpony', 'SKILL.md');
-const BOOTSTRAP_SKILL = path.join(SKILLS, 'using-superpowers', 'SKILL.md');
+const BOOTSTRAP_SKILL = path.join(SKILLS, 'using-skills', 'SKILL.md');
 
 function readFile(p) {
   try { return fs.readFileSync(p, 'utf8'); } catch (e) { return ''; }
@@ -80,7 +80,7 @@ function buildInstructions(mode, opts = {}) {
     '===== SUPERPONY ROOT POLICY (how much to build + how to work) =====',
     stripFrontmatter(readFile(ROOT_SKILL)),
     '',
-    '===== SKILL BOOTSTRAP (using-superpowers — how to find & use skills) =====',
+    '===== SKILL BOOTSTRAP (using-skills — how to find & use skills) =====',
     stripFrontmatter(readFile(BOOTSTRAP_SKILL)),
   ].join('\n');
 }

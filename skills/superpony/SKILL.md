@@ -26,7 +26,7 @@ For every task, before touching code:
 1. **Process gate (Superpowers):** Is this trivial or non-trivial?
    - Trivial (rename, one-line fix, formatting): skip planning, do it, leave one check if logic is non-obvious.
    - Non-trivial: run the full pipeline below. Do NOT skip phases.
-   - *Skill-check reconciliation:* superpony is injected every session, so you have **already invoked a skill** before responding — the `using-superpowers` "invoke a skill before ANY response" rule is satisfied by superpony itself. A trivial task needs no further skill; just do it. A non-trivial task invokes the phase skills below.
+   - *Skill-check reconciliation:* superpony is injected every session, so you have **already invoked a skill** before responding — the `using-skills` "invoke a skill before ANY response" rule is satisfied by superpony itself. A trivial task needs no further skill; just do it. A non-trivial task invokes the phase skills below.
 2. **Scope gate (Ponytail ladder):** before writing ANYTHING, climb to the first rung that holds:
    1. Does this need to exist at all? → no: say so, stop (YAGNI).
    2. Stdlib does it? → use it.
