@@ -98,12 +98,12 @@ Switch: `/superpony:mode lite|full|ultra`. Turn off: `/superpony:mode off`, `sto
 Write on Claude, review and implement on Gemini, final review back on Claude. Every gate is manual — you trigger the next step:
 
 ```
-/superpony:spec  "feature"   # 1. spec            Claude · brainstorming
-/superpony:check <spec>      # 2. review          Gemini · agy-review-plan
-/superpony:plan              # 3. plan            Claude · writing-plans
-/superpony:check <plan>      # 4. review          Gemini · agy-review-plan
-/superpony:build <plan>      # 5. implementation  Gemini · agy-execute-plan
-/superpony:review            # 6. review          Claude · two-pass
+/superpony:brainstorming "feature"  # 1. spec            Claude · brainstorming
+/superpony:check <spec>             # 2. review          Gemini · agy-review-plan
+/superpony:plan                     # 3. plan            Claude · writing-plans
+/superpony:check <plan>             # 4. review          Gemini · agy-review-plan
+/superpony:build <plan>             # 5. implementation  Gemini · agy-execute-plan
+/superpony:review                   # 6. review          Claude · two-pass
 ```
 
 The Gemini legs reuse your `agy-review-plan` / `agy-execute-plan` skills (requires the `agy` CLI). Claude only? Skip `-build` — the plan runs right in the session (executing-plans / subagent-driven-development).
@@ -113,7 +113,7 @@ The Gemini legs reuse your `agy-review-plan` / `agy-execute-plan` skills (requir
 | Command | What it does |
 |---|---|
 | `/superpony:mode [mode]` | Activate / switch intensity (`lite\|full\|ultra\|off`). |
-| `/superpony:spec [topic]` | Write a design spec (Claude · brainstorming). |
+| `/superpony:brainstorming [topic]` | Write a design spec (Claude · brainstorming). |
 | `/superpony:plan [spec]` | Turn an approved spec into a bite-sized plan (Claude · writing-plans). |
 | `/superpony:check <path>` | Independent review of a spec/plan on Gemini (agy-review-plan). |
 | `/superpony:build <plan>` | Implement an approved plan on Gemini (agy-execute-plan). |

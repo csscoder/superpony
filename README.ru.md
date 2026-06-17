@@ -64,12 +64,12 @@ Superpony — **плагин Claude Code**, ставится и обновляе
 Пишешь на Claude, ревьюишь и реализуешь на Gemini, финальное ревью — обратно на Claude. Каждый гейт ручной — следующий шаг запускаешь ты:
 
 ```
-/superpony:spec  "feature"   # 1. спека         Claude · brainstorming
-/superpony:check <spec>      # 2. ревью          Gemini · agy-review-plan
-/superpony:plan              # 3. план           Claude · writing-plans
-/superpony:check <plan>      # 4. ревью          Gemini · agy-review-plan
-/superpony:build <plan>      # 5. реализация     Gemini · agy-execute-plan
-/superpony:review            # 6. ревью          Claude · two-pass
+/superpony:brainstorming "feature"  # 1. спека         Claude · brainstorming
+/superpony:check <spec>             # 2. ревью          Gemini · agy-review-plan
+/superpony:plan                     # 3. план           Claude · writing-plans
+/superpony:check <plan>             # 4. ревью          Gemini · agy-review-plan
+/superpony:build <plan>             # 5. реализация     Gemini · agy-execute-plan
+/superpony:review                   # 6. ревью          Claude · two-pass
 ```
 
 Gemini-плечи переиспользуют твои скилы `agy-review-plan` / `agy-execute-plan` (нужен CLI `agy`). Хочешь только Claude? Пропусти `-build` — план исполнится прямо в сессии (executing-plans / subagent-driven-development).
@@ -79,7 +79,7 @@ Gemini-плечи переиспользуют твои скилы `agy-review-p
 | Команда | Что делает |
 |---|---|
 | `/superpony:mode [mode]` | Активировать / переключить интенсивность (`lite\|full\|ultra\|off`). |
-| `/superpony:spec [topic]` | Написать дизайн-спеку (Claude · brainstorming). |
+| `/superpony:brainstorming [topic]` | Написать дизайн-спеку (Claude · brainstorming). |
 | `/superpony:plan [spec]` | Превратить одобренную спеку в bite-sized план (Claude · writing-plans). |
 | `/superpony:check <path>` | Независимое ревью спеки/плана на Gemini (agy-review-plan). |
 | `/superpony:build <plan>` | Реализовать одобренный план на Gemini (agy-execute-plan). |

@@ -8,4 +8,4 @@ Use the `superpony:writing-plans` skill to turn the approved spec (`{{args}}`, o
 - Apply the 🐴 Ponytail overlay: **Minimal Solution Hypothesis** first, "why not smaller?", rejected approaches, smallest viable diff, exact file paths + complete code, no placeholders.
 - Bite-sized tasks (2-5 min each). Save to `docs/superpony/plans/YYYY-MM-DD-<feature>.md` and STOP for my approval.
 
-Pipeline: spec → check → **plan (here)** → `/superpony:check <plan>` (Gemini review) → `/superpony:build <plan>` (Gemini) → `/superpony:review` (Claude).
+Pipeline: brainstorming → check → **plan (here)** → `/superpony:check <plan>` (Gemini review) → `/superpony:build <plan>` (Gemini) → `/superpony:review` (Claude).
