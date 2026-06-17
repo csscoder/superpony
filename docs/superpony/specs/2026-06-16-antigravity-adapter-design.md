@@ -22,6 +22,8 @@ Two external review rounds via `agy` (Gemini 3.5 Flash High). All findings verif
 
 **Plan-time correction (2026-06-17, during `/superpony:check` on the implementation plan):** the install mechanism was found wrong against the `agy 1.0.8` binary — there is **no `agy plugin marketplace add`** command, so `marketplace.json` + `agy plugin install superpony@superpony` cannot work. Corrected throughout (§3/§4/§5.1/§6/§11): install is `agy plugin install <git-url|dir>`, no `marketplace.json`. Verified against the binary and ponytail's agy install row.
 
+**Build-time finding (2026-06-17, during `/superpony:build`, surfaced by `agy plugin validate`):** agy auto-discovers `commands/` at the plugin root regardless of the manifest and converts all 9 to bare-named skills; `"commands": []` does not suppress it. The original §2/§5.3 premise "omit from manifest → excluded" was false. Accepted as documented behavior — the commands are inert in agy and the always-on rule carries the policy (see §2/§5.3).
+
 ## 1. Problem & goal
 
 Superpony ships as a Claude Code plugin (`.claude-plugin/`, `skills/`, `commands/`, Node `hooks/`). We want the same disciplined-process / lazy-footprint behavior inside the **Antigravity CLI (`agy`)** — the same CLI superpony already shells out to.
@@ -39,7 +41,7 @@ Precedent: `ponytail` is a multi-harness port; its Antigravity row is instructio
 - Install docs + a sync check keeping generated rules in step with the canonical policy.
 
 **Out (v1):**
-- **Shipping `commands/` to agy.** They are Claude-side pipeline orchestration: `mode` is hook-backed; `build`/`check` are cross-vendor calls that collapse inside agy-as-Gemini; bare filenames collide with built-ins (`/help`) once "converted to skills". Skills carry the substance. (Future: a separate `superpony-*`-prefixed agy command set — §12.)
+- **Relying on the shared `commands/` in agy.** They are Claude-side pipeline orchestration: `mode` is hook-backed; `build`/`check` are cross-vendor calls that collapse inside agy-as-Gemini. **Caveat (build-verified):** agy auto-discovers `commands/` at the plugin root regardless of the manifest (`"commands": []` does not suppress it) and converts all 9 to skills by **bare filename** (`help, build, check, plan, review, spec, mode, audit, debt`); `agy plugin validate` is still `[ok]`. We accept this — the converted skills are inert/redundant in agy (the always-on rule carries the substance), and there is no manifest-level opt-out short of restructuring the shared repo (rejected — §10). (Future: a separate `superpony-*`-prefixed agy command set — §12.)
 - Porting the Node **hooks**. `agy` exposes **no user-configurable context-injecting hook surface** (§3); a planted `hooks.json` loads but never fires (silent). Revisit if Google ships it.
 - Statusline badge for `agy`.
 
@@ -53,7 +55,7 @@ Tools: Context7 (official `agy` CLI + Google Antigravity docs), Perplexity (ecos
 
 **(b) Verified against `agy v1.0.8` (ground truth):**
 - Plugin = `plugin.json` + components `{skills, agents, commands, mcpServers, hooks}`. **No `rules` component** — rules install separately.
-- `plugin.json` auto-discovers `skills/` relative to the manifest dir; explicit `"skills":["./skills"]` also works. Commands "convert to skills" by **bare filename** → collision risk (hence skills-only).
+- `plugin.json` auto-discovers `skills/` relative to the manifest dir; explicit `"skills":["./skills"]` also works. **`commands/` is likewise auto-discovered at the plugin root regardless of the manifest** (build-verified: `"commands": []` does not suppress it); each is "converted to a skill" by **bare filename**, so the 9 superpony commands surface as bare skills in agy (accepted as inert — §5.3).
 - Plugins install to **`~/.gemini/config/plugins/<name>/`**, preserving the source tree.
 - **Install mechanism (verified):** `agy plugin install <git-url|dir>`. `agy plugin --help` (1.0.8) lists `list/import/install/uninstall/enable/disable/validate/link/help` — **no `marketplace` subcommand**; the sibling `ponytail` installs into agy via a direct git URL. So **no `marketplace.json`** is shipped (this corrects the original v1–v3 design).
 - Workspace dir is **`.agents/`** (plural): binary string `{workspace}/.agents/skills/{skill_name}/SKILL.md`. Context7 docs saying `.agent/` are stale.
@@ -95,8 +97,8 @@ Part B — Rule (policy):    @import ONE file in ~/.gemini/GEMINI.md (global) OR
 ### 5.2 Skills (reuse, zero copies)
 The whole `skills/` tree is discovered as-is — single source of truth, no duplication. Includes the root `superpony` skill and `using-superpowers`.
 
-### 5.3 Commands — not shipped to agy (v1)
-Shared `commands/` stays Claude-only (collision + Claude-specific orchestration). Functionality lives in the skills. Future: a prefixed agy command set (§12).
+### 5.3 Commands — Claude-primary; agy auto-exposes them (v1)
+Shared `commands/` is authored for Claude's `/superpony:*` pipeline. We do **not** rely on them in agy, but **agy auto-converts `commands/` to bare-named skills** on install (build-verified — the manifest cannot opt out; `"commands": []` is ignored). They are harmless/redundant in agy (the always-on rule carries the policy; `build`/`check` would merely re-invoke agy). Excluding them would require restructuring the shared repo (rejected — §10). Future: a prefixed agy command set to make them coherent rather than inert (§12).
 
 ### 5.4 Always-on policy rules (the hook replacement)
 - **What:** three `@generated` files under `antigravity/rules/` — `superpony.md` (full), `superpony-lite.md`, `superpony-ultra.md`. Each is self-contained: **YAML frontmatter** (`name`, `description`, `trigger: always_on`) + an agy-flavored, intensity-stating banner + `skills/superpony/SKILL.md` (root policy) + `skills/using-superpowers/SKILL.md` (bootstrap). The banner does **not** reference the Claude-only `/superpony:mode` command. This is the payload that makes the policy apply to **every** task.

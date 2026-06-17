@@ -79,7 +79,7 @@ Its `trigger: always_on` frontmatter activates it in that workspace.
 
 **Limitations vs Claude Code (v1):**
 - No ephemeral `/superpony:mode` toggle — intensity is whichever rule file you import/copy (`agy` has no context-injecting hook).
-- Pipeline commands (`/superpony:spec|check|plan|build|review`) stay Claude-only; the skills carry the substance.
+- Pipeline commands (`spec/check/plan/build/review/mode/audit/debt/help`) are Claude-first. agy auto-converts `commands/` into bare-named skills on install, so they also surface in agy — but they're inert there (the always-on rule carries the policy; `build`/`check` would just re-invoke agy). Use the skills, not these.
 
 ## Modes and commands
 
