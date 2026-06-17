@@ -24,7 +24,7 @@ For every task, before touching code:
 1. **Process gate (Superpowers):** Is this trivial or non-trivial?
    - Trivial (rename, one-line fix, formatting): skip planning, do it, leave one check if logic is non-obvious.
    - Non-trivial: run the full pipeline below. Do NOT skip phases.
-   - *Skill-check reconciliation:* superpony is injected every session, so you have **already invoked a skill** before responding — the `using-superpowers` "invoke a skill before ANY response" rule is satisfied by superpony itself. A trivial task needs no further skill; just do it. A non-trivial task invokes the phase skills below.
+   - *Skill-check reconciliation:* superpony is injected every session, so you have **already invoked a skill** before responding — the `using-skills` "invoke a skill before ANY response" rule is satisfied by superpony itself. A trivial task needs no further skill; just do it. A non-trivial task invokes the phase skills below.
 2. **Scope gate (Ponytail ladder):** before writing ANYTHING, climb to the first rung that holds:
    1. Does this need to exist at all? → no: say so, stop (YAGNI).
    2. Stdlib does it? → use it.
@@ -82,7 +82,7 @@ The active level is injected at session start (and shown in the statusline as `[
 User instructions always win. "stop superpony" / "normal mode" → revert to plain behavior.
 
 
-===== SKILL BOOTSTRAP (using-superpowers — how to find & use skills) =====
+===== SKILL BOOTSTRAP (using-skills — how to find & use skills) =====
 <SUBAGENT-STOP>
 If you were dispatched as a subagent to execute a specific task, skip this skill.
 </SUBAGENT-STOP>
@@ -97,10 +97,10 @@ This is not negotiable. This is not optional. You cannot rationalize your way ou
 
 ## Instruction Priority
 
-Superpowers skills override default system prompt behavior, but **user instructions always take precedence**:
+superpony skills override default system prompt behavior, but **user instructions always take precedence**:
 
 1. **User's explicit instructions** (CLAUDE.md, GEMINI.md, AGENTS.md, direct requests) — highest priority
-2. **Superpowers skills** — override default system behavior where they conflict
+2. **superpony skills** — override default system behavior where they conflict
 3. **Default system prompt** — lowest priority
 
 If CLAUDE.md, GEMINI.md, or AGENTS.md says "don't use TDD" and a skill says "always use TDD," follow the user's instructions. The user is in control.

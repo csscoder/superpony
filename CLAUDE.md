@@ -36,8 +36,8 @@ elsewhere: `/plugin marketplace add https://github.com/csscoder/superpony` then
 - Default mode: `SUPERPONY_DEFAULT_MODE` env → `full`. Modes: `off|lite|full|ultra`.
 - `<project>/.claude/.superpony-mode` is per-project **runtime state** (the hook writes
   it into the target project via `CLAUDE_PROJECT_DIR`), git-ignored. Never commit it.
-- Known: if the upstream `superpowers` plugin is also installed globally, `using-superpowers`
-  is injected twice per session (superpony's hook + the plugin's). Harmless duplication.
+- The skill bootstrap is `using-skills` (renamed from the upstream `using-superpowers`) so it
+  no longer collides by name with the upstream `superpowers` plugin if both are installed.
 
 ## Hygiene
 
