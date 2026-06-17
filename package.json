@@ -6,6 +6,9 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "sync:agy": "node scripts/sync-antigravity-rule.js",
+    "check:agy": "node scripts/sync-antigravity-rule.js --check",
+    "test": "npm run check:agy",
     "eval": "promptfoo eval -c eval/promptfooconfig.yaml",
     "eval:view": "promptfoo view"
   },

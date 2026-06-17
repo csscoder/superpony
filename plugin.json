@@ -1,0 +1,6 @@
+{
+  "name": "superpony",
+  "version": "0.1.0",
+  "description": "Disciplined process (Superpowers) + lazy footprint (Ponytail), as an Antigravity plugin.",
+  "skills": ["./skills"]
+}
