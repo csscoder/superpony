@@ -47,6 +47,40 @@ Local plugin development: `claude --plugin-dir /path/to/superpony`.
 
 > The `[SUPERPONY]` statusline is optional: the plugin can't set `statusLine` itself. To show the active mode, add a command pointing to `<plugin-install-path>/hooks/superpony-statusline.sh` in your own `settings.json`.
 
+## Antigravity (agy)
+
+Superpony also runs inside the **Antigravity CLI (`agy`)** as a native plugin + an always-on rule.
+
+**1. Install the skill suite (plugin):**
+
+```bash
+agy plugin install https://github.com/csscoder/superpony
+```
+
+(Or from a local checkout: `agy plugin install /path/to/superpony`.)
+
+**2. Apply the policy to every task (rule).** Add one line to `~/.gemini/GEMINI.md`:
+
+```
+@config/plugins/superpony/antigravity/rules/superpony.md
+```
+
+That imports the **full** policy globally. To change intensity, swap the filename to
+`superpony-lite.md` (lite) or `superpony-ultra.md` (ultra). Keep exactly one such line.
+
+**Per-project override** — copy one rule file into the workspace instead of (or on top of) the global import:
+
+```bash
+mkdir -p .agents/rules
+cp ~/.gemini/config/plugins/superpony/antigravity/rules/superpony-ultra.md .agents/rules/superpony.md
+```
+
+Its `trigger: always_on` frontmatter activates it in that workspace.
+
+**Limitations vs Claude Code (v1):**
+- No ephemeral `/superpony:mode` toggle — intensity is whichever rule file you import/copy (`agy` has no context-injecting hook).
+- Pipeline commands (`/superpony:spec|check|plan|build|review`) stay Claude-only; the skills carry the substance.
+
 ## Modes and commands
 
 Intensity controls how aggressively to minimize and how tersely to answer. **Process discipline is always on.** Default is `full`. Override the default via `SUPERPONY_DEFAULT_MODE`.
