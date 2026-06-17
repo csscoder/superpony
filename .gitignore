@@ -9,3 +9,6 @@ node_modules/
 # promptfoo eval output
 .promptfoo/
 eval/output*
+
+# Antigravity CLI per-workspace runtime state
+.antigravitycli/
